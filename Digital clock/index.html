@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Animated Digital Clock</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      transition: background-color 0.5s ease;
+    }
+
+    .clock-container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      color: #fff;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    #clock {
+      font-size: 60px;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    #date {
+      font-size: 18px;
+      color: #989595fa;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+
+    .theme-btn.light {
+      background: #e9e4e4;
+      color: #c0a0a0cd;
+    }
+
+    .theme-btn.dark {
+      background: #000;
+      color: #fff;
+    }
+
+    .theme-btn.golden {
+      background: #f5d418;
+      color: #222;
+    }
+
+    .toggle-btn {
+      background-color: #007bff;
+      color: white;
+      position: relative;
+    }
+
+    .toggle-btn.running::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border-radius: 15px;
+      border: 2px solid rgba(0, 123, 255, 0.5);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    button:hover {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="clock-container">
+    <div id="clock">00:00:00</div>
+    <div id="date">DD/MM/YYYY</div>
+    <div class="controls">
+      <button class="toggle-btn" onclick="toggleClock()" id="toggleBtn">Start</button>
+      <button class="theme-btn light" onclick="setTheme('light')">Light</button>
+      <button class="theme-btn dark" onclick="setTheme('dark')">Black</button>
+      <button class="theme-btn golden" onclick="setTheme('golden')">Golden</button>
+    </div>
+  </div>
+
+  <script>
+    let clockInterval;
+    let clockRunning = false;
+
+    function updateClock() {
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').textContent = `${hrs}:${mins}:${secs}`;
+
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      document.getElementById('date').textContent = `${day}/${month}/${year}`;
+    }
+
+    function toggleClock() {
+      const toggleBtn = document.getElementById('toggleBtn');
+
+      if (!clockRunning) {
+        updateClock();
+        clockInterval = setInterval(updateClock, 1000);
+        clockRunning = true;
+        toggleBtn.textContent = 'Stop';
+        toggleBtn.classList.add('running');
+      } else {
+        clearInterval(clockInterval);
+        clockRunning = false;
+        toggleBtn.textContent = 'Start';
+        toggleBtn.classList.remove('running');
+      }
+    }
+
+    function setTheme(theme) {
+      const container = document.querySelector('.clock-container');
+      switch (theme) {
+        case 'light':
+          container.style.background = 'rgba(255, 255, 255, 0.9)';
+          container.style.color = '#000';
+          break;
+        case 'dark':
+          container.style.background = 'rgba(0, 0, 0, 0.7)';
+          container.style.color = '#fff';
+          break;
+        case 'golden':
+          container.style.background = 'rgba(255, 215, 0, 0.8)';
+          container.style.color = '#222';
+          break;
+      }
+    }
+  </script>
+
+</body>
+</html>
